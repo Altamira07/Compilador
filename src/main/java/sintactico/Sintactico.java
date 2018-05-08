@@ -10,15 +10,12 @@ import utils.TablaSimbolos;
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
-import java.util.HashMap;
-import java.util.LinkedHashMap;
-import java.util.Map;
-import java.util.Stack;
+import java.util.*;
 
 public class Sintactico {
     private static LinkedHashMap<EstadoSintactico, Map<Estados,EstadoSintactico>> automata = new LinkedHashMap<>();
     Estados []tokens;
-    Stack<Map<Estados,EstadoSintactico>> pila = new Stack<>();
+    Stack<Estados> pila = new Stack<>();
     public Sintactico ()
     {
         tokens = TablaSimbolos.toArray();
@@ -43,13 +40,31 @@ public class Sintactico {
 
 
         Map<Estados,EstadoSintactico> trancicion;
-//Estado inicial y sus tranciciones
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.INIT,EstadoSintactico.Q15);
+        automata.put(EstadoSintactico.Q14,trancicion);
+
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.ABRE_PARENTESIS,EstadoSintactico.Q16);
+        automata.put(EstadoSintactico.Q15,trancicion);
+
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.CIERRA_PARENTESIS,EstadoSintactico.Q17);
+        automata.put(EstadoSintactico.Q16,trancicion);
+
+
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.ABRE_LLAVE,EstadoSintactico.Q0);
+        automata.put(EstadoSintactico.Q17,trancicion);
+
+        //Estado inicial y sus tranciciones
         trancicion = new HashMap<>();
         trancicion.put(Estados.WHILE,EstadoSintactico.Q8);
         trancicion.put(Estados.IF,EstadoSintactico.Q8);
         trancicion.put(Estados.STRING,EstadoSintactico.Q9);
         trancicion.put(Estados.INT,EstadoSintactico.Q9);
         trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q11);
+        trancicion.put(Estados.CIERRA_LLAVE,EstadoSintactico.Q13);
         automata.put(EstadoSintactico.Q0,trancicion);
 
 
@@ -87,6 +102,7 @@ public class Sintactico {
         trancicion.put(Estados.MENOR,EstadoSintactico.Q3);
         trancicion.put(Estados.MAYOR,EstadoSintactico.Q3);
 
+        trancicion.put(Estados.ABRE_LLAVE,EstadoSintactico.Q17);
 
         //Agregamos el estado final de Q1
         trancicion.put(Estados.CIERRA_PARENTESIS,EstadoSintactico.Q0);
@@ -132,23 +148,50 @@ public class Sintactico {
 
     public void analizar()
     {
-        EstadoSintactico actual = EstadoSintactico.Q0;
-        System.out.println("Analizare");
-        Map<Estados,EstadoSintactico> trancicion = automata.get(actual);
-        Estados tokenActual;
-        for(int i = 0 ; i < tokens.length; i++)
+        EstadoSintactico actual;
+        Map<Estados,EstadoSintactico> trancicion;
+        Map<Estados,EstadoSintactico> trancicionSiguientes;
+        EstadoSintactico anterior;
+        Estados token;
+        int i = 0;
+        boolean b = (tokens[0] == Estados.INIT && tokens[1]== Estados.ABRE_PARENTESIS && tokens[2] == Estados.CIERRA_PARENTESIS && tokens[3] == Estados.ABRE_LLAVE );
+        if(b)
         {
-            tokenActual = tokens[i];
-            System.out.println(tokenActual);
-            actual  = trancicion.get(tokenActual);
-            //System.out.println("Trancicion actual "+actual.isFinal());
+            pila.push(tokens[3]);
+            actual = EstadoSintactico.Q0;
             trancicion = automata.get(actual);
+            for(i = 4; i<tokens.length && !pila.empty();i++)
+            {
+                token = tokens[i];
+                if(token == Estados.CIERRA_LLAVE && !pila.empty())
+                {
+                    pila.pop();
+                    trancicion = automata.get(EstadoSintactico.Q0);
+                }
+                if(token == Estados.ABRE_LLAVE )
+                {
+                    pila.push(token);
+                    actual = EstadoSintactico.Q0;
+                    continue;
+                }
+                anterior = actual;
+                actual = trancicion.get(token);
+                if(actual == null)
+                {
+                    PilaErrores.pushErrorSintactico(anterior,tokens[i-1].getLinea());
+                    trancicion = automata.get(EstadoSintactico.Q0);
+                    continue;
+                }
 
+
+                trancicion = automata.get(actual);
+            }
         }
+        while (!pila.empty())
+        {
+            System.out.println("Falta cerrrar { "+pila.pop().getLinea());
+        }
+        System.out.println(PilaErrores.getErrors());
     }
-
-
-
-
 
 }

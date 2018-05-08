@@ -219,9 +219,10 @@ public class Lexico {
 					sb.append(caracter);
 					caracter = obtenerCaracter();
 				}while (Character.isLetter(caracter));
+				posicionToken ++;
 				Estados identificador = Estados.IDENTIFICADOR;
 				identificador.setLinea(linea);
-				identificador.setPocision(posicion);
+				identificador.setPocision(posicionToken);
 				identificador.setLexema(sb.toString());
 				TablaSimbolos.insertar(identificador);
 				sb = new StringBuilder();
@@ -235,7 +236,8 @@ public class Lexico {
 				} while (caracter != '"' && caracter != '\u0000');
 				Estados valorString = Estados.VALOR_STRING;
 				valorString.setLinea(linea);
-				valorString.setPocision(posicion);
+				posicionToken++;
+				valorString.setPocision(posicionToken);
 				valorString.setLexema(sb.toString());
 				TablaSimbolos.insertar(valorString);
 				if(caracter != '\u0000')
@@ -253,7 +255,8 @@ public class Lexico {
 				Estados numero = Estados.VALOR_INT;
 				numero.setLexema(sb.toString());
 				numero.setLinea(linea);
-				numero.setPocision(posicion);
+				posicionToken++;
+				numero.setPocision(posicionToken);
 				TablaSimbolos.insertar(numero);
 				sb = new StringBuilder();
 			}
@@ -272,7 +275,8 @@ public class Lexico {
 			if(actual != null && actual.isFinal())
 			{
 				sb = new StringBuilder();
-				actual.setPocision(posicion);
+				posicionToken++;
+				actual.setPocision(posicionToken);
 				actual.setLinea(linea);
 				TablaSimbolos.insertar(actual);
 				actual = Estados.Q0;
@@ -292,7 +296,6 @@ public class Lexico {
 		if (archivo != null && archivo.getFilePointer() < archivo.length()) {
 			caracter = (char) archivo.readByte();
 			posicion++;
-
 			if (caracter == '\n') {
 				linea++;
 				posicion = 1;

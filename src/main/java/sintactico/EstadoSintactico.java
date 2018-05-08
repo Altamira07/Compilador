@@ -12,24 +12,20 @@ public enum EstadoSintactico {
     Q4(false),
     Q5(false),
     Q6(false),
-    CONTROL(false),
     Q7(false),
-    Q8(true),
+    Q8(false),
     Q9(false),
-    Q10(true),
-    DECLARACIONES(false),
+    Q10(false),
     Q11(false),
     Q12(false),
-    Q13(false),
+    Q13(true),
     Q14(false),
-    PROGRAMA(false),
-    INSTRUCCIONES(false)
+    Q15(false),
+    Q16(false),
+    Q17(false),
     ;
 
-
-
     private final boolean _final;
-
     private EstadoSintactico(boolean _final)
     {
         this._final = _final;
