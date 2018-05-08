@@ -23,6 +23,12 @@ public enum EstadoSintactico {
     Q15(false),
     Q16(false),
     Q17(false),
+
+    Q18(false),
+
+    Q19(false),
+
+    Q20(false),
     ;
 
     private final boolean _final;

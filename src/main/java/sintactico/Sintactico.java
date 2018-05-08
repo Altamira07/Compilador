@@ -55,6 +55,8 @@ public class Sintactico {
 
         trancicion = new HashMap<>();
         trancicion.put(Estados.ABRE_LLAVE,EstadoSintactico.Q0);
+        trancicion.put(Estados.PUNTO_COMA,EstadoSintactico.Q0);
+
         automata.put(EstadoSintactico.Q17,trancicion);
 
         //Estado inicial y sus tranciciones
@@ -62,6 +64,7 @@ public class Sintactico {
         trancicion.put(Estados.WHILE,EstadoSintactico.Q8);
         trancicion.put(Estados.IF,EstadoSintactico.Q8);
         trancicion.put(Estados.STRING,EstadoSintactico.Q9);
+        trancicion.put(Estados.PRINT, EstadoSintactico.Q8);
         trancicion.put(Estados.INT,EstadoSintactico.Q9);
         trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q11);
         trancicion.put(Estados.CIERRA_LLAVE,EstadoSintactico.Q13);
@@ -86,6 +89,8 @@ public class Sintactico {
         trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q1);
         trancicion.put(Estados.COMILLAS,EstadoSintactico.Q10);
         trancicion.put(Estados.VALOR_INT,EstadoSintactico.Q1);
+        trancicion.put(Estados.READ,EstadoSintactico.Q18);
+
         automata.put(EstadoSintactico.EXP,trancicion);
 
         trancicion = new HashMap<>();
@@ -102,10 +107,7 @@ public class Sintactico {
         trancicion.put(Estados.MENOR,EstadoSintactico.Q3);
         trancicion.put(Estados.MAYOR,EstadoSintactico.Q3);
 
-        trancicion.put(Estados.ABRE_LLAVE,EstadoSintactico.Q17);
-
-        //Agregamos el estado final de Q1
-        trancicion.put(Estados.CIERRA_PARENTESIS,EstadoSintactico.Q0);
+        trancicion.put(Estados.CIERRA_PARENTESIS,EstadoSintactico.Q17);
         trancicion.put(Estados.PUNTO_COMA,EstadoSintactico.Q0);
 
         automata.put(EstadoSintactico.Q1,trancicion);
@@ -144,20 +146,34 @@ public class Sintactico {
         automata.put(EstadoSintactico.Q12,trancicion);
 
 
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.ABRE_PARENTESIS,EstadoSintactico.Q19);
+        automata.put(EstadoSintactico.Q18,trancicion);
+
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.CIERRA_PARENTESIS,EstadoSintactico.Q20);
+        automata.put(EstadoSintactico.Q19,trancicion);
+
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.PUNTO_COMA,EstadoSintactico.Q0);
+        automata.put(EstadoSintactico.Q20,trancicion);
+
     }
 
     public void analizar()
     {
         EstadoSintactico actual;
         Map<Estados,EstadoSintactico> trancicion;
-        Map<Estados,EstadoSintactico> trancicionSiguientes;
         EstadoSintactico anterior;
         Estados token;
-        int i = 0;
+        int i;
         boolean b = (tokens[0] == Estados.INIT && tokens[1]== Estados.ABRE_PARENTESIS && tokens[2] == Estados.CIERRA_PARENTESIS && tokens[3] == Estados.ABRE_LLAVE );
         if(b)
         {
+            if(tokens[3] != Estados.ABRE_LLAVE)
+                PilaErrores.pushErrorSintactico(EstadoSintactico.Q17,tokens[2].getLinea());
             pila.push(tokens[3]);
+
             actual = EstadoSintactico.Q0;
             trancicion = automata.get(actual);
             for(i = 4; i<tokens.length && !pila.empty();i++)
@@ -172,6 +188,7 @@ public class Sintactico {
                 {
                     pila.push(token);
                     actual = EstadoSintactico.Q0;
+                    trancicion = automata.get(actual);
                     continue;
                 }
                 anterior = actual;
@@ -182,11 +199,9 @@ public class Sintactico {
                     trancicion = automata.get(EstadoSintactico.Q0);
                     continue;
                 }
-
-
                 trancicion = automata.get(actual);
             }
-        }
+        }else PilaErrores.pushErrorSintactico(EstadoSintactico.Q17,1);
         while (!pila.empty())
         {
             System.out.println("Falta cerrrar { "+pila.pop().getLinea());
