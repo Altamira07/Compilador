@@ -69,6 +69,7 @@ public class Sintactico {
 
         trancicion =new HashMap<>();
         trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q1);
+        trancicion.put(Estados.COMILLAS,EstadoSintactico.Q10);
         trancicion.put(Estados.VALOR_INT,EstadoSintactico.Q1);
         automata.put(EstadoSintactico.EXP,trancicion);
 
@@ -118,6 +119,13 @@ public class Sintactico {
         trancicion.put(Estados.VALOR_INT,EstadoSintactico.Q1);
         automata.put(EstadoSintactico.Q4,trancicion);
 
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.VALOR_STRING,EstadoSintactico.Q12);
+        automata.put(EstadoSintactico.Q10,trancicion);
+
+        trancicion = new HashMap<>();
+        trancicion.put(Estados.COMILLAS,EstadoSintactico.Q1);
+        automata.put(EstadoSintactico.Q12,trancicion);
 
 
     }
