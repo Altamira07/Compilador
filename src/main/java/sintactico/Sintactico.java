@@ -173,7 +173,6 @@ public class Sintactico {
             if(tokens[3] != Estados.ABRE_LLAVE)
                 PilaErrores.pushErrorSintactico(EstadoSintactico.Q17,tokens[2].getLinea());
             pila.push(tokens[3]);
-
             actual = EstadoSintactico.Q0;
             trancicion = automata.get(actual);
             for(i = 4; i<tokens.length && !pila.empty();i++)
@@ -198,7 +197,7 @@ public class Sintactico {
                     PilaErrores.pushErrorSintactico(anterior,tokens[i-1].getLinea());
                     trancicion = automata.get(EstadoSintactico.Q0);
                     continue;
-                }
+               }
                 trancicion = automata.get(actual);
             }
         }else PilaErrores.pushErrorSintactico(EstadoSintactico.Q17,1);
@@ -206,7 +205,7 @@ public class Sintactico {
         {
             System.out.println("Falta cerrrar { "+pila.pop().getLinea());
         }
-        System.out.println(PilaErrores.getErrors());
+        //System.out.println(PilaErrores.getErrors());
     }
 
 }
