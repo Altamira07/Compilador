@@ -220,7 +220,7 @@ public class Editor extends Action
         consola.setText(PilaErrores.getErrors());
     }
 
-    @Override
+    @Over   ride
     void cambiarColores(ActionForButtons action, Color color) {
         switch (action)
         {
