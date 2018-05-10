@@ -31,6 +31,7 @@ public abstract class Action  {
             }
             if(PilaErrores.vacia())
             {
+                toTable();
                 cambiarColores(ActionForButtons.LEXICO,Color.GREEN);
                 habilitar(ActionForButtons.SINTACTICO,true);
                 habilitar(ActionForButtons.LEXICO,false);
@@ -53,6 +54,7 @@ public abstract class Action  {
             new Sintactico();
             if(PilaErrores.vacia())
             {
+
                 cambiarColores(ActionForButtons.SINTACTICO,Color.GREEN);
                 habilitar(ActionForButtons.SEMANTICO,true);
                 habilitar(ActionForButtons.SINTACTICO,false);
@@ -68,7 +70,7 @@ public abstract class Action  {
 
     }
     abstract void habilitar(ActionForButtons action,boolean b);
-
+    abstract void toTable();
     abstract void guardar();
     abstract void abrir();
     abstract void nuevo();

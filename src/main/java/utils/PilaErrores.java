@@ -9,33 +9,27 @@ public class PilaErrores {
 
 	private static Nodo principal;
 	private static Map<Integer,String> errores = new HashMap<>();
-	private static Map<EstadoSintactico,String> erroresSintacticos = new HashMap<>();
 	static {
 		errores.put(100,"No se esperaba caracter: ");
-		errores.put(200,"Se esperaba operador aritmetico | booleano");
-		errores.put(201,"Se esperaba & o |");
-		errores.put(202,"Se esperaba INT | ID");
-		errores.put(203,"Se esperaba INT | ID | = ");
-		errores.put(204,"Se esperaba =");
+		errores.put(200,"(");
+		errores.put(201,")");
+		errores.put(202,"{ de }");
+		errores.put(203,"} de {");
+		errores.put(204,";");
 
-		erroresSintacticos.put(EstadoSintactico.Q14,"INIT");
-		erroresSintacticos.put(EstadoSintactico.Q15,"(");
-		erroresSintacticos.put(EstadoSintactico.Q16,")");
-		erroresSintacticos.put(EstadoSintactico.Q17,"{");
-		erroresSintacticos.put(EstadoSintactico.Q0,"}");
-		erroresSintacticos.put(EstadoSintactico.Q9,"IDENTIFICADOR");
-		erroresSintacticos.put(EstadoSintactico.Q11," = | ; ");
-		erroresSintacticos.put(EstadoSintactico.Q8,"(");
-		erroresSintacticos.put(EstadoSintactico.EXP,"IDENTIFICADOR | INT | \"");
-		erroresSintacticos.put(EstadoSintactico.Q10,"VALOR_STRING");
-		erroresSintacticos.put(EstadoSintactico.Q12,"\"");
-		erroresSintacticos.put(EstadoSintactico.Q2,"INT | IDENTIFICADOR");
-		erroresSintacticos.put(EstadoSintactico.Q3,"INT | IDENTIFICADOR");
-		erroresSintacticos.put(EstadoSintactico.Q5,"=");
-		erroresSintacticos.put(EstadoSintactico.Q4,"INT | IDENTIFICADOR");
-		erroresSintacticos.put(EstadoSintactico.Q1,")");
+		errores.put(213,"; | =");
+		errores.put(205,"VALOR");
 
+		errores.put(206,"=");
+		errores.put(207,"IDENTIFICADOR");
 
+		errores.put(208,"<= | >= | == | < | > | != ");
+		errores.put(209,"+ | - | * | /");
+		errores.put(210,"&");
+		errores.put(212,"|");
+
+		errores.put(214,"INIT");
+		errores.put(211,"IDENTIFICADOR | VALOR ");
 
 
 	}
@@ -55,10 +49,10 @@ public class PilaErrores {
 		}
 		return error;
 	}
-	public static void pushErrorSintactico(EstadoSintactico estado,int linea)
+	public static void pushErrorSintactico(int id,int linea,int posicion)
 	{
 		Nodo nuevo;
-		String error = "NUMERO" + "Se esperaba "+ erroresSintacticos.get(estado) + " linea" + linea;
+		String error = "id: " + id + " Se esperaba: "+errores.get(id)+ " linea: "+linea;
 		if( vacia() )
 			principal = new Nodo(error);
 		else {

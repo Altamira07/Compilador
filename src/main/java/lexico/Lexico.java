@@ -9,10 +9,11 @@ import java.util.Map;
 
 import utils.PilaErrores;
 import utils.TablaSimbolos;
+import utils.models.*;
 
 public class Lexico {
 	private RandomAccessFile archivo;
-	private int posicion = 0, linea = 1,posicionToken = 0, ID = 0,VALOR_STRING = 0, VALOR_INT;
+	private int posicion = 0, linea = 1,posicionToken = 0, ID = 100;
 	
 
 	static private LinkedHashMap<Estados, Map<Character, Estados>> automata = new LinkedHashMap<Estados, Map<Character, Estados>>();
@@ -42,7 +43,6 @@ public class Lexico {
 		transicion.put('(', Estados.ABRE_PARENTESIS);
 		transicion.put(')', Estados.CIERRA_PARENTESIS);
 		transicion.put(';', Estados.PUNTO_COMA);
-		transicion.put('"', Estados.COMILLAS);
 
 
 		automata.put(Estados.Q0, transicion);
@@ -194,6 +194,11 @@ public class Lexico {
 			File archivo = new File("palabras");
 			RandomAccessFile raf = new RandomAccessFile(archivo,"r");
 			new Lexico(raf);
+			Token tokens[] = TablaSimbolos.toArray();
+			for(Token token: tokens)
+			{
+				System.out.println(token.toString());
+			}
 			System.out.println(PilaErrores.getErrors());
 		}catch (Exception ex){
 			System.out.println(ex);
@@ -202,9 +207,10 @@ public class Lexico {
 
 	public void analizar() throws IOException {
 		char caracter;
-		Estados actual = Estados.Q0;
+g		Estados actual = Estados.Q0;
 		Map<Character,Estados> tranciciones;
 		StringBuilder sb = new StringBuilder();
+		Token token;
 		do {
 		    caracter = obtenerCaracter();
 			if (caracter == '#') {
@@ -215,59 +221,55 @@ public class Lexico {
 			}
 
 			if(caracter == '$'){
+				ID++;
 				do{
 					sb.append(caracter);
 					caracter = obtenerCaracter();
 				}while (Character.isLetter(caracter));
 				posicionToken ++;
-				Estados identificador = Estados.IDENTIFICADOR;
-				identificador.setLinea(linea);
-				identificador.setPocision(posicionToken);
-				identificador.setLexema(sb.toString());
-				TablaSimbolos.insertar(identificador);
+				token = new Identificador(Etiquetas.IDENTIFICADOR,linea,ID,sb.toString());
+				TablaSimbolos.insertar(token);
 				sb = new StringBuilder();
 			}
 			if (caracter == '"') {
-				TablaSimbolos.insertar(Estados.COMILLAS);
+				sb.append(caracter);
+				ID++;
 				caracter = obtenerCaracter();
 				do {
 					sb.append(caracter);
 					caracter = obtenerCaracter();
 				} while (caracter != '"' && caracter != '\u0000');
-				Estados valorString = Estados.VALOR_STRING;
-				valorString.setLinea(linea);
-				posicionToken++;
-				valorString.setPocision(posicionToken);
-				valorString.setLexema(sb.toString());
-				TablaSimbolos.insertar(valorString);
 				if(caracter != '\u0000')
-					TablaSimbolos.insertar(Estados.COMILLAS);
+				{
+				    sb.append(caracter);
+					token = new TString(Etiquetas.VALOR_STRING,linea,ID,sb.toString());
+					TablaSimbolos.insertar(token);
+				}
 				else
 					System.out.println("Se esperaba cierre");
 				sb = new StringBuilder();
 				continue;
 			}
 			if (Character.isDigit(caracter)) {
+				ID++;
 				do {
 					sb.append(caracter);
 					caracter = obtenerCaracter();
 				} while (Character.isDigit(caracter));
-				Estados numero = Estados.VALOR_INT;
-				numero.setLexema(sb.toString());
-				numero.setLinea(linea);
-				posicionToken++;
-				numero.setPocision(posicionToken);
-				TablaSimbolos.insertar(numero);
+				int valor = Integer.parseInt(sb.toString());
+				token = new TInt(Etiquetas.VALOR_INT,linea,ID,Integer.parseInt(sb.toString()));
+				TablaSimbolos.insertar(token);
 				sb = new StringBuilder();
-			}
 
+			}
 
 			sb.append(caracter);
 
 			tranciciones = automata.get(actual);
 			actual = tranciciones.get(caracter);
 
-			if (actual == null && Character.isWhitespace(caracter)) {
+			if (actual == null && Character.isWhitespace(caracter))
+			{
 				actual = Estados.Q0;
 				continue;
 			}
@@ -275,10 +277,7 @@ public class Lexico {
 			if(actual != null && actual.isFinal())
 			{
 				sb = new StringBuilder();
-				posicionToken++;
-				actual.setPocision(posicionToken);
-				actual.setLinea(linea);
-				TablaSimbolos.insertar(actual);
+				TablaSimbolos.insertar(getPalabraForEstados(actual));
 				actual = Estados.Q0;
 				continue;
 			}
@@ -289,6 +288,40 @@ public class Lexico {
 			}
 		} while (caracter != '\u0000');
 
+	}
+	public Token getPalabraForEstados(Estados estado)
+	{
+		switch (estado)
+		{
+			case WHILE: return  new Palabra(Etiquetas.WHILE,linea,"while");
+			case IF: return  new Palabra(Etiquetas.IF,linea,"if");
+			case ELSE: return  new Palabra(Etiquetas.ELSE,linea,"else");
+			case INIT: return  new Palabra(Etiquetas.INIT,linea,"init");
+			case STRING: return  new Palabra(Etiquetas.STRING,linea,"String");
+			case INT: return  new Palabra(Etiquetas.INT,linea,"int");
+			case PRINT: return new Palabra(Etiquetas.PRINT,linea,"print");
+			case READ: return new Palabra(Etiquetas.READ,linea,"read");
+
+			case AND: return new OpBooleano(Etiquetas.AND,linea,"&");
+			case OR: return new OpBooleano(Etiquetas.OR,linea,"|");
+			case MAYOR: return new OpBooleano(Etiquetas.MAYOR,linea,">");
+			case MENOR: return new OpBooleano(Etiquetas.MAYOR,linea,"<");
+			case DIFERENTE: return new OpBooleano(Etiquetas.DIFERENTE,linea,"!");
+
+			case SUMA: return new OpAritemetico(Etiquetas.SUMA,linea,'+');
+			case RESTA: return new OpAritemetico(Etiquetas.RESTA,linea,'-');
+			case MULTIPLICACION: return  new OpAritemetico(Etiquetas.MULTIPLICACION,linea,'*');
+			case DIVISION: return  new OpAritemetico(Etiquetas.DIVISION,linea,'/');
+			case IGUAL: return new OpAritemetico(Etiquetas.ASIGNACION,linea,'=');
+
+			case ABRE_LLAVE: return new CaracterLenguaje(Etiquetas.ABRE_LLAVE,linea,'{');
+			case CIERRA_LLAVE: return new CaracterLenguaje(Etiquetas.CIERRA_LLAVE,linea,'}');
+			case ABRE_PARENTESIS: return new CaracterLenguaje(Etiquetas.ABRE_PARENTESIS,linea,'(');
+			case CIERRA_PARENTESIS: return new CaracterLenguaje(Etiquetas.CIERRA_PARENTESIS,linea,'(');
+			case PUNTO_COMA: return new CaracterLenguaje(Etiquetas.PUNTO_COMA,linea,';');
+
+		}
+		return  null;
 	}
 
 	public char obtenerCaracter() throws IOException {

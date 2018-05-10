@@ -1,6 +1,7 @@
 package utils;
 
 import lexico.Estados;
+import utils.models.Token;
 
 import javax.swing.table.DefaultTableModel;
 
@@ -15,8 +16,8 @@ public class TablaSimbolos {
 		raiz = fin = null;
 	}
 	
-	public static void insertar(Estados estado) {
-		Nodo nuevo = new Nodo(estado);
+	public static void insertar(Token token) {
+		Nodo nuevo = new Nodo(token);
 		contador++;
 		if (vacia()) {
 			raiz = fin = nuevo;
@@ -27,15 +28,15 @@ public class TablaSimbolos {
 	}
 
 
-	public static Estados []toArray()
+	public static Token []toArray()
     {
-        Estados []array = new Estados[contador];
+        Token []array = new Token[contador];
         int i = 0 ;
         Nodo rec = raiz;
-        while (rec != null)
+		while (rec != null)
         {
-            array[i] = rec.estado;
-            i++;
+		    array[i] = rec.token;
+			i++;
             rec = rec.sig;
         }
         return  array;
@@ -51,6 +52,16 @@ public class TablaSimbolos {
 	}
 
 
+	public static void recorrerTabla()
+	{
+		Nodo rec = raiz;
+		while (rec != null)
+		{
+
+			rec = rec.sig;
+		}
+
+	}
 	
 
 	public void setModelo(DefaultTableModel modelo) {
@@ -58,12 +69,11 @@ public class TablaSimbolos {
 			this.modelo = modelo;
 	}
 	private static class  Nodo {
-		Estados estado;
+		Token token;
 		Nodo sig;
-
-		public Nodo(Estados estado) {
+		public Nodo(Token token) {
 			sig = null;
-			this.estado = estado;
+			this.token = token;
 		}
 
 	}

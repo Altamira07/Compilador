@@ -6,6 +6,7 @@ import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import utils.PilaErrores;
 import utils.TablaSimbolos;
+import utils.models.*;
 
 import javax.swing.*;
 import javax.swing.table.DefaultTableModel;
@@ -114,7 +115,7 @@ public class Editor extends Action
     {
         JTable table = new JTable();
         modelo = (DefaultTableModel) table.getModel();
-        String[]campos ={"ID","Descripcion","Lexema"};
+        String[]campos ={"ID","Tipo","Lexema"};
         for(String s:campos)
             modelo.addColumn(s);
         return new JScrollPane(table);
@@ -197,7 +198,6 @@ public class Editor extends Action
     @Override
     void reiniciar()
     {
-        System.out.println("No entro :v");
         consola.setText("");
         modelo.setNumRows(0);
         lexico.setEnabled(true);
@@ -220,7 +220,7 @@ public class Editor extends Action
         consola.setText(PilaErrores.getErrors());
     }
 
-    @Over   ride
+    @Override
     void cambiarColores(ActionForButtons action, Color color) {
         switch (action)
         {
@@ -232,6 +232,65 @@ public class Editor extends Action
                 break;
             case SEMANTICO:
                 semantico.setBackground(color);
+        }
+    }
+    @Override
+    void toTable()
+    {
+        Token[] tokens =  TablaSimbolos.toArray();
+        for(int i = 0 ; i< tokens.length;i++)
+        {
+            String datos[] = new String[3];
+            switch (tokens[i].getEtiqueta())
+            {
+                case IDENTIFICADOR:
+                    Identificador id = (Identificador)tokens[i];
+                    modelo.addRow(id.toArray());
+                    break;
+                case VALOR_STRING:
+                    TString tString = (TString)tokens[i];
+                    modelo.addRow(tString.toArray());
+                    break;
+                case VALOR_INT:
+                    TInt tInt =  (TInt) tokens[i];
+                    modelo.addRow(tInt.toArray());
+                    break;
+                case WHILE:
+                case IF:
+                case ELSE:
+                case INIT:
+                case STRING:
+                case INT:
+                case PRINT:
+                case READ:
+                    Palabra palabra = (Palabra)tokens[i];
+                    modelo.addRow(palabra.toArray());
+                    break;
+                case AND:
+                case OR:
+                case MAYOR:
+                case MENOR:
+                case DIFERENTE:
+                    OpBooleano opBooleano = (OpBooleano) tokens[i];
+                    modelo.addRow(opBooleano.toArray());
+                    break;
+                case SUMA:
+                case RESTA:
+                case MULTIPLICACION:
+                case DIVISION:
+                case ASIGNACION:
+                    OpAritemetico opAritemetico = (OpAritemetico) tokens[i];
+                    modelo.addRow(opAritemetico.toArray());
+                    break;
+                case ABRE_LLAVE:
+                case CIERRA_LLAVE:
+                case ABRE_PARENTESIS:
+                case CIERRA_PARENTESIS:
+                case PUNTO_COMA:
+                    CaracterLenguaje caracterLenguaje = (CaracterLenguaje) tokens[i];
+                    modelo.addRow(caracterLenguaje.toArray());
+                    break;
+            }
         }
     }
 }

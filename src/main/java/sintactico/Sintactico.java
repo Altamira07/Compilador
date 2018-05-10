@@ -1,21 +1,25 @@
 package sintactico;
 
-import com.sun.deploy.uitoolkit.impl.awt.AWTPluginUIToolkit;
-import com.sun.xml.internal.bind.v2.model.core.ID;
-import lexico.Estados;
 import lexico.Lexico;
 import utils.PilaErrores;
 import utils.TablaSimbolos;
+import utils.models.Etiquetas;
+import utils.models.Token;
 
 import java.io.File;
 import java.io.IOException;
 import java.io.RandomAccessFile;
 import java.util.*;
 
+import static sintactico.EstadoSintactico.*;
+
 public class Sintactico {
-    private static LinkedHashMap<EstadoSintactico, Map<Estados,EstadoSintactico>> automata = new LinkedHashMap<>();
-    Estados []tokens;
-    Stack<Estados> pila = new Stack<>();
+    Token tokens[];
+    Stack<Token> pila = new Stack<>();
+    Stack<Token> pilaLlaves = new Stack<>();
+    int i = -1;
+
+
     public Sintactico ()
     {
         tokens = TablaSimbolos.toArray();
@@ -28,184 +32,299 @@ public class Sintactico {
             File archivo = new File("palabras");
             RandomAccessFile raf = new RandomAccessFile(archivo,"r");
             new Lexico(raf);
-            new Sintactico();
+            if(PilaErrores.vacia())
+                new Sintactico();
             System.out.println(PilaErrores.getErrors());
         }catch (IOException ex){
             System.out.println(ex);
         }
     }
-    static {
-
-
-
-
-        Map<Estados,EstadoSintactico> trancicion;
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.INIT,EstadoSintactico.Q15);
-        automata.put(EstadoSintactico.Q14,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.ABRE_PARENTESIS,EstadoSintactico.Q16);
-        automata.put(EstadoSintactico.Q15,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.CIERRA_PARENTESIS,EstadoSintactico.Q17);
-        automata.put(EstadoSintactico.Q16,trancicion);
-
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.ABRE_LLAVE,EstadoSintactico.Q0);
-        trancicion.put(Estados.PUNTO_COMA,EstadoSintactico.Q0);
-
-        automata.put(EstadoSintactico.Q17,trancicion);
-
-        //Estado inicial y sus tranciciones
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.WHILE,EstadoSintactico.Q8);
-        trancicion.put(Estados.IF,EstadoSintactico.Q8);
-        trancicion.put(Estados.STRING,EstadoSintactico.Q9);
-        trancicion.put(Estados.PRINT, EstadoSintactico.Q8);
-        trancicion.put(Estados.INT,EstadoSintactico.Q9);
-        trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q11);
-        trancicion.put(Estados.CIERRA_LLAVE,EstadoSintactico.Q13);
-        automata.put(EstadoSintactico.Q0,trancicion);
-
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q11);
-        automata.put(EstadoSintactico.Q9,trancicion);
-
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.PUNTO_COMA,EstadoSintactico.Q0);
-        trancicion.put(Estados.IGUAL,EstadoSintactico.EXP);
-        automata.put(EstadoSintactico.Q11,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.ABRE_PARENTESIS,EstadoSintactico.EXP);
-        automata.put(EstadoSintactico.Q8,trancicion);
-
-        trancicion =new HashMap<>();
-        trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q1);
-        trancicion.put(Estados.COMILLAS,EstadoSintactico.Q10);
-        trancicion.put(Estados.VALOR_INT,EstadoSintactico.Q1);
-        trancicion.put(Estados.READ,EstadoSintactico.Q18);
-
-        automata.put(EstadoSintactico.EXP,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.SUMA,EstadoSintactico.Q2);
-        trancicion.put(Estados.RESTA,EstadoSintactico.Q2);
-        trancicion.put(Estados.MULTIPLICACION,EstadoSintactico.Q2);
-        trancicion.put(Estados.DIVISION,EstadoSintactico.Q2);
-
-        trancicion.put(Estados.AND,EstadoSintactico.Q6);
-        trancicion.put(Estados.OR,EstadoSintactico.Q6);
-
-        trancicion.put(Estados.IGUAL,EstadoSintactico.Q5);
-
-        trancicion.put(Estados.MENOR,EstadoSintactico.Q3);
-        trancicion.put(Estados.MAYOR,EstadoSintactico.Q3);
-
-        trancicion.put(Estados.CIERRA_PARENTESIS,EstadoSintactico.Q17);
-        trancicion.put(Estados.PUNTO_COMA,EstadoSintactico.Q0);
-
-        automata.put(EstadoSintactico.Q1,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q1);
-        trancicion.put(Estados.VALOR_INT,EstadoSintactico.Q1);
-        automata.put(EstadoSintactico.Q2,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.AND,EstadoSintactico.EXP);
-        trancicion.put(Estados.OR,EstadoSintactico.EXP);
-        automata.put(EstadoSintactico.Q6,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.VALOR_INT,EstadoSintactico.Q1);
-        trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q1);
-        trancicion.put(Estados.IGUAL,EstadoSintactico.Q4);
-        automata.put(EstadoSintactico.Q3,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.IGUAL,EstadoSintactico.Q4);
-        automata.put(EstadoSintactico.Q5,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.IDENTIFICADOR,EstadoSintactico.Q1);
-        trancicion.put(Estados.VALOR_INT,EstadoSintactico.Q1);
-        automata.put(EstadoSintactico.Q4,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.VALOR_STRING,EstadoSintactico.Q12);
-        automata.put(EstadoSintactico.Q10,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.COMILLAS,EstadoSintactico.Q1);
-        automata.put(EstadoSintactico.Q12,trancicion);
-
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.ABRE_PARENTESIS,EstadoSintactico.Q19);
-        automata.put(EstadoSintactico.Q18,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.CIERRA_PARENTESIS,EstadoSintactico.Q20);
-        automata.put(EstadoSintactico.Q19,trancicion);
-
-        trancicion = new HashMap<>();
-        trancicion.put(Estados.PUNTO_COMA,EstadoSintactico.Q0);
-        automata.put(EstadoSintactico.Q20,trancicion);
-
-    }
 
     public void analizar()
     {
-        EstadoSintactico actual;
-        Map<Estados,EstadoSintactico> trancicion;
-        EstadoSintactico anterior;
-        Estados token;
-        int i;
-        boolean b = (tokens[0] == Estados.INIT && tokens[1]== Estados.ABRE_PARENTESIS && tokens[2] == Estados.CIERRA_PARENTESIS && tokens[3] == Estados.ABRE_LLAVE );
-        if(b)
-        {
-            if(tokens[3] != Estados.ABRE_LLAVE)
-                PilaErrores.pushErrorSintactico(EstadoSintactico.Q17,tokens[2].getLinea());
-            pila.push(tokens[3]);
-            actual = EstadoSintactico.Q0;
-            trancicion = automata.get(actual);
-            for(i = 4; i<tokens.length && !pila.empty();i++)
-            {
-                token = tokens[i];
-                if(token == Estados.CIERRA_LLAVE && !pila.empty())
-                {
-                    pila.pop();
-                    trancicion = automata.get(EstadoSintactico.Q0);
-                }
-                if(token == Estados.ABRE_LLAVE )
-                {
-                    pila.push(token);
-                    actual = EstadoSintactico.Q0;
-                    trancicion = automata.get(actual);
-                    continue;
-                }
-                anterior = actual;
-                actual = trancicion.get(token);
-                if(actual == null)
-                {
-                    PilaErrores.pushErrorSintactico(anterior,tokens[i-1].getLinea());
-                    trancicion = automata.get(EstadoSintactico.Q0);
-                    continue;
-               }
-                trancicion = automata.get(actual);
-            }
-        }else PilaErrores.pushErrorSintactico(EstadoSintactico.Q17,1);
-        while (!pila.empty())
-        {
-            System.out.println("Falta cerrrar { "+pila.pop().getLinea());
-        }
-        //System.out.println(PilaErrores.getErrors());
+        init();;
     }
 
+
+    public void init()
+    {
+        EstadoSintactico actual = Q1;
+        for( i = 0 ; i<4;i++)
+        {
+            Token t = tokens[i];
+
+            switch (actual)
+            {
+                case Q1:
+                    if(t.getEtiqueta()== Etiquetas.INIT)
+                        actual = Q2;
+                    else
+                        PilaErrores.pushErrorSintactico(214,t.getLinea(),0);
+                    break;
+                case Q2:
+                    if(t.getEtiqueta()== Etiquetas.ABRE_PARENTESIS)
+                        actual = Q3;
+                    else
+                        PilaErrores.pushErrorSintactico(200,t.getLinea(),0);
+                    break;
+                case Q3:
+                    if(t.getEtiqueta()== Etiquetas.CIERRA_PARENTESIS)
+                        actual = Q4;
+                    else
+                        PilaErrores.pushErrorSintactico(201,t.getLinea(),0);
+                    break;
+                case Q4:
+                    if(t.getEtiqueta() == Etiquetas.ABRE_LLAVE)
+                        bloque(t);
+                    else {
+                        PilaErrores.pushErrorSintactico(202,t.getLinea(),0);
+                    }
+                    break;
+            }
+        }
+        while (!pilaLlaves.empty())
+        {
+            while (!pilaLlaves.empty())
+                PilaErrores.pushErrorSintactico(203,pilaLlaves.pop().getLinea(),0);
+        }
+    }
+
+    void bloque(Token t){
+        pilaLlaves.push(t);
+        System.out.println("Sub bloque" + pilaLlaves.size());
+        boolean pop = false;
+        Token token;
+        while (!pop && i < tokens.length)
+        {
+            token = siguiente();
+            if(token !=null && token.getEtiqueta() == Etiquetas.CIERRA_LLAVE && !pilaLlaves.empty())
+            {
+                System.out.println("Saliendo del subloque " + pilaLlaves.size());
+                pilaLlaves.pop();
+                pop = true;
+                continue;
+            }else {
+                asignacion();
+                control();
+            }
+        }
+    }
+
+    public void control()
+    {
+        Token token = actual();
+        if(token !=null && (token.getEtiqueta() ==Etiquetas.WHILE || token.getEtiqueta() ==Etiquetas.IF))
+        {
+            expBooleana();
+            //token = actual();
+        }
+    }
+
+
+    public void asignacion()
+    {
+        Token token = actual();
+        if(token !=null && (token.getEtiqueta() == Etiquetas.STRING || token.getEtiqueta() == Etiquetas.INT))
+        {
+            token = siguiente();
+            if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
+            {
+                token = siguiente();
+                if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION)
+                {
+                    expAritmetias();
+                }else if(token !=null && token.getEtiqueta() != Etiquetas.PUNTO_COMA)
+                    PilaErrores.pushErrorSintactico(213,token.getLinea(),i);
+            }else PilaErrores.pushErrorSintactico(207,token.getLinea(),i);
+        } else if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
+        {
+            token = siguiente();
+            if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION){
+                expAritmetias();
+            }else PilaErrores.pushErrorSintactico(206,token.getLinea(),i);
+        }
+    }
+
+
+
+
+    public void expAritmetias()
+    {
+        Token token;
+        Stack<Integer> pos = new Stack<>();
+        EstadoSintactico actual = Q1;
+        do
+        {
+            token = siguiente();
+            if(token !=null && token.getEtiqueta() == Etiquetas.ABRE_PARENTESIS)
+            {
+                pila.push(token);
+                pos.push(i);
+                continue;
+            }
+            if(token !=null && token.getEtiqueta() == Etiquetas.CIERRA_PARENTESIS && !pila.empty())
+            {
+                pila.pop();
+                continue;
+            }else if(token !=null && token.getEtiqueta() == Etiquetas.CIERRA_PARENTESIS){
+
+                PilaErrores.pushErrorSintactico(200,token.getLinea(),i);
+            }
+            switch (actual)
+            {
+                case Q1:
+                    if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT || token.getEtiqueta() == Etiquetas.VALOR_STRING  )
+                    {
+                        actual = Q2;
+                    }else
+                        PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
+                    break;
+                case Q2:
+                    if (token !=null && token.getEtiqueta() == Etiquetas.SUMA || token.getEtiqueta() == Etiquetas.RESTA || token.getEtiqueta() == Etiquetas.MULTIPLICACION || token.getEtiqueta() == Etiquetas.DIVISION )
+                    {
+                        actual = Q1;
+                    }else if(token !=null && token.getEtiqueta() == Etiquetas.PUNTO_COMA) continue;
+                    break;
+            }
+        }while (token !=null && token.getEtiqueta() != Etiquetas.PUNTO_COMA  && i < tokens.length);
+
+        if(!pila.empty())
+        {
+            while (!pila.empty())
+            {
+                token  = pila.pop();
+                PilaErrores.pushErrorSintactico(201,token.getLinea(),pos.pop());
+            }
+        }
+
+        if(token !=null && token.getEtiqueta() != Etiquetas.PUNTO_COMA)
+        {
+            PilaErrores.pushErrorSintactico(204,tokens[i-1].getLinea(),i);
+        }
+
+    }
+
+
+    public void expBooleana()
+    {
+        Token token = siguiente();
+        Stack<Integer> pos = new Stack<>();
+        EstadoSintactico actual = Q1;
+        EstadoSintactico anterior = actual;
+        if(token !=null && token.getEtiqueta() == Etiquetas.ABRE_PARENTESIS)
+        {
+            pos.push(i);
+            pila.push(token);
+            do{
+                token = siguiente();
+                if(token !=null && token.getEtiqueta() == Etiquetas.ABRE_PARENTESIS)
+                {
+                    pila.push(token);
+                    pos.push(i);
+                    continue;
+                }
+                if(token !=null && token.getEtiqueta() == Etiquetas.CIERRA_PARENTESIS && !pila.empty())
+                {
+                    pila.pop();
+                    continue;
+                }else if(token !=null && token.getEtiqueta() == Etiquetas.CIERRA_PARENTESIS){
+
+                  //  PilaErrores.pushErrorSintactico(200,token.getLinea(),i);
+                }
+                //anterior = actual;
+                switch (actual)
+                {
+                    case Q1:
+                        if(token !=null &&token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT)
+                           actual = Q2;
+                        else PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
+                        break;
+                    case Q2:
+                        if(token !=null &&token.getEtiqueta() == Etiquetas.MENOR || token.getEtiqueta() == Etiquetas.MAYOR )
+                            actual = Q3;
+                        else if(token !=null &&token.getEtiqueta() == Etiquetas.ASIGNACION || token.getEtiqueta() == Etiquetas.DIFERENTE)
+                            actual = Q5;
+                        else if(token !=null &&token.getEtiqueta() == Etiquetas.AND)
+                            actual = Q6;
+                        else if(token !=null &&token.getEtiqueta() == Etiquetas.OR)
+                            actual = Q7;
+                        //else  PilaErrores.pushErrorSintactico(208,token.getLinea(),i);
+
+                        break;
+                    case Q3:
+                        if(token !=null &&token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT)
+                            actual = Q2;
+                        else if(token !=null &&token.getEtiqueta() == Etiquetas.ASIGNACION)
+                            actual = Q4;
+                        else
+                            PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
+                        break;
+                    case Q4:
+                        if(token !=null &&token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT)
+                            actual = Q2;
+                        else
+                            PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
+                        break;
+                    case Q5:
+                        if(token !=null &&token.getEtiqueta() == Etiquetas.ASIGNACION)
+                            actual = Q4;
+                        else PilaErrores.pushErrorSintactico(206,token.getLinea(),i);
+                        break;
+                    case Q6:
+                        if(token !=null &&token.getEtiqueta() == Etiquetas.AND)
+                            actual = Q1;
+                        else
+                            PilaErrores.pushErrorSintactico(210,token.getLinea(),i);
+                        break;
+                    case Q7:
+                        if(token !=null &&token.getEtiqueta() == Etiquetas.OR)
+                            actual = Q1;
+                        else
+                            PilaErrores.pushErrorSintactico(212,token.getLinea(),i);
+                        break;
+
+                }
+            }while (token !=null &&token.getEtiqueta() != Etiquetas.ABRE_LLAVE && i < tokens.length);
+            if(i == tokens.length)
+                anterior();
+            else if(token !=null &&token.getEtiqueta() == Etiquetas.ABRE_LLAVE )
+            {
+                System.out.println("Bloque de un control");
+                bloque(token);
+            }
+        }else
+        {
+
+            PilaErrores.pushErrorSintactico(200,token.getLinea(),i);
+        }
+
+        if(!pila.empty())
+        {
+            while (!pila.empty())
+            {
+                token  = pila.pop();
+                PilaErrores.pushErrorSintactico(201,token.getLinea(),pos.pop());
+            }
+        }
+    }
+
+    Token siguiente()
+    {
+        i++;
+        return (i < tokens.length)?tokens[i]:null;
+    }
+    Token anterior()
+    {
+        i--;
+        return  tokens[i];
+    }
+    Token actual()
+    {
+        return (i < tokens.length)?tokens[i]:null;
+    }
+
+    Token consumir(int i)
+    {
+        return tokens[i];
+    }
 }

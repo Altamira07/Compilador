@@ -21,7 +21,7 @@ public enum Estados
 	Q16("Q16",false),
 	Q17("Q17",false),
 	Q18("Q18",false),
-	STRING(102,"String",true,"Palabra reservada"),
+	STRING(102,"TString",true,"Palabra reservada"),
 	Q20("Q20",false),
 	Q21("Q21",false),
 	Q22("Q22",false),
@@ -39,13 +39,12 @@ public enum Estados
 	
 	ELSE(108,"else",true,"Palabra reservada"),
 
-
-
 	DIVISION(133,"/",true,"Operador aritmetico"),
 	MULTIPLICACION(132,"*",true,"Operador aritmetico"),
 	RESTA(131,"-",true,"Operador aritmetico"),
 	SUMA(130,"+",true,"Operador aritmetico"),
-	
+
+
 	IGUAL(122,"=",true,"igual"),
 	MENOR(120,"<",true,"menor que"),
 	MAYOR(121,">",true,"mayor que"),
@@ -62,15 +61,21 @@ public enum Estados
 	IDENTIFICADOR(400),
 	VALOR_INT(1000),
 	VALOR_STRING(2000),
+
+	IGUAL_IGUAL(1,"==",true,"igual igual"),
+	MENOR_IGUAL(2,"<=",true,"menor igual"),
+	MAYOR_IGUAL(3,">=",true,"menor igual"),
+	DIFERENTE(4,"!=",true,"diferente"),
     VACIO(),
 	;
 	
 	
-	private  String estado;
+	private final String estado;
 	private final boolean _final;
 	private final String descripcion;
 	private final int etiqueta;
 	private int linea,pocision;
+	private String lexema = "";
 	Estados (int etiqueta, String estado, boolean _final,String desc)
 	{
 		this.etiqueta = etiqueta;
@@ -132,7 +137,13 @@ public enum Estados
 
 	public void setLexema(String valor)
 	{
-		this.estado = valor;
+
+		this.lexema = valor;
+	}
+
+	public String getLexema()
+	{
+		return this.lexema;
 	}
 
 	public void setPocision(int pocision) {
