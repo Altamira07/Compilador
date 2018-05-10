@@ -44,11 +44,6 @@ public class Semantico {
     public Semantico()
     {
         registros = TablaSemantica.toArray();
-        System.out.println("TEngo");
-        for(int i = 0 ; i< registros.length; i++)
-        {
-            System.out.println(registros[i].getIdentificador().getId());
-        }
         System.out.println("_________");
         preAnalisis();
     }

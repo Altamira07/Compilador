@@ -57,7 +57,7 @@ public class PilaErrores {
 	public static  void pushErrrorSemantico(int id,Token i,int linea)
 	{
 		Nodo nuevo;
-		String error = "id: " + id + " Se esperaba: "+errores.get(id)+ " "+ i.getIdentificador()+" linea: "+linea;
+		String error = "id: " + id + " "+errores.get(id)+ " "+ i.getIdentificador()+" linea: "+linea;
 		if( vacia() )
 			principal = new Nodo(error);
 		else {

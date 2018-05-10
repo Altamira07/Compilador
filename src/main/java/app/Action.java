@@ -2,6 +2,7 @@ package app;
 
 import com.sun.org.apache.regexp.internal.RE;
 import lexico.Lexico;
+import semantico.Semantico;
 import sintactico.Sintactico;
 import utils.PilaErrores;
 
@@ -67,7 +68,20 @@ public abstract class Action  {
     }
     public void hacerSemantico()
     {
+        hacerSintactico();
+        if(PilaErrores.vacia())
+        {
+            new Semantico();
+            if(PilaErrores.vacia())
+            {
+                cambiarColores(ActionForButtons.SEMANTICO,Color.GREEN);
+                habilitar(ActionForButtons.SEMANTICO,false);
+            }else{
+                cambiarColores(ActionForButtons.SEMANTICO,Color.RED);
+                verErrores();
+            }
 
+        }
     }
     abstract void habilitar(ActionForButtons action,boolean b);
     abstract void toTable();

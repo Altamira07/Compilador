@@ -4,6 +4,7 @@ package app;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
 import org.fife.ui.rtextarea.RTextScrollPane;
+import semantico.TablaSemantica;
 import utils.PilaErrores;
 import utils.TablaSimbolos;
 import utils.models.*;
@@ -82,7 +83,7 @@ public class Editor extends Action
         colorDefault = lexico.getBackground();
         sintactico = new JButton("Sintactico");
         sintactico.addActionListener(new Oyente(ActionForButtons.SINTACTICO));
-        semantico = new JButton("semantico.Semantico");
+        semantico = new JButton("Semantico");
         semantico.addActionListener(new Oyente(ActionForButtons.SEMANTICO));
         toolBar.add(lexico);
         toolBar.add(sintactico);
@@ -208,6 +209,7 @@ public class Editor extends Action
         cambiarColores(ActionForButtons.SEMANTICO, colorDefault);
         TablaSimbolos.limpiar();
         PilaErrores.limpiar();
+        TablaSemantica.limipar();
 
     }
     @Override
@@ -217,6 +219,7 @@ public class Editor extends Action
 
     @Override
     void verErrores() {
+        consola.setCaretColor(Color.RED);
         consola.setText(PilaErrores.getErrors());
     }
 
