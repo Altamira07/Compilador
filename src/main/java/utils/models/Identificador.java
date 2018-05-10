@@ -1,13 +1,11 @@
 package utils.models;
 
 public class Identificador extends Token {
-    String identificador;
-    int id;
+
     public Identificador(Etiquetas etiqueta,int linea, int id,String identificador) {
-        super(etiqueta,linea);
+        super(etiqueta,id,linea,identificador);
 
         this.identificador = identificador;
-        this.id = id;
     }
 
 

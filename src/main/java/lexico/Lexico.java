@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
+import javafx.scene.control.Tab;
 import utils.PilaErrores;
 import utils.TablaSimbolos;
 import utils.models.*;
@@ -207,7 +208,7 @@ public class Lexico {
 
 	public void analizar() throws IOException {
 		char caracter;
-g		Estados actual = Estados.Q0;
+		Estados actual = Estados.Q0;
 		Map<Character,Estados> tranciciones;
 		StringBuilder sb = new StringBuilder();
 		Token token;
@@ -221,17 +222,24 @@ g		Estados actual = Estados.Q0;
 			}
 
 			if(caracter == '$'){
-				ID++;
+				sb = new StringBuilder();
 				do{
 					sb.append(caracter);
 					caracter = obtenerCaracter();
 				}while (Character.isLetter(caracter));
-				posicionToken ++;
-				token = new Identificador(Etiquetas.IDENTIFICADOR,linea,ID,sb.toString());
+				int id = TablaSimbolos.search(sb.toString());
+				if(id == -1)
+				{
+					ID++;
+					token = new Identificador(Etiquetas.IDENTIFICADOR,linea,ID,sb.toString());
+				}else
+					token = new Identificador(Etiquetas.IDENTIFICADOR,linea,id,sb.toString());
+
 				TablaSimbolos.insertar(token);
 				sb = new StringBuilder();
 			}
 			if (caracter == '"') {
+				sb = new StringBuilder();
 				sb.append(caracter);
 				ID++;
 				caracter = obtenerCaracter();
@@ -251,12 +259,15 @@ g		Estados actual = Estados.Q0;
 				continue;
 			}
 			if (Character.isDigit(caracter)) {
+				sb = new StringBuilder();
 				ID++;
 				do {
 					sb.append(caracter);
 					caracter = obtenerCaracter();
 				} while (Character.isDigit(caracter));
 				int valor = Integer.parseInt(sb.toString());
+
+
 				token = new TInt(Etiquetas.VALOR_INT,linea,ID,Integer.parseInt(sb.toString()));
 				TablaSimbolos.insertar(token);
 				sb = new StringBuilder();
@@ -333,7 +344,7 @@ g		Estados actual = Estados.Q0;
 				linea++;
 				posicion = 1;
 				posicionToken = 0;
-				return obtenerCaracter();
+			//	return obtenerCaracter();
 			}
 			return caracter;
 		} else if (archivo != null && archivo.getFilePointer() == archivo.length()) {

@@ -1,6 +1,7 @@
 package utils;
 
 import sintactico.EstadoSintactico;
+import utils.models.Token;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,6 +32,9 @@ public class PilaErrores {
 		errores.put(214,"INIT");
 		errores.put(211,"IDENTIFICADOR | VALOR ");
 
+		errores.put(300,"Ya habia sido declarado");
+		errores.put(301,"No ha sido declarado");
+
 
 	}
 
@@ -49,6 +53,20 @@ public class PilaErrores {
 		}
 		return error;
 	}
+
+	public static  void pushErrrorSemantico(int id,Token i,int linea)
+	{
+		Nodo nuevo;
+		String error = "id: " + id + " Se esperaba: "+errores.get(id)+ " "+ i.getIdentificador()+" linea: "+linea;
+		if( vacia() )
+			principal = new Nodo(error);
+		else {
+			nuevo = new Nodo(error);
+			nuevo.sig = principal;
+			principal = nuevo;
+		}
+	}
+
 	public static void pushErrorSintactico(int id,int linea,int posicion)
 	{
 		Nodo nuevo;

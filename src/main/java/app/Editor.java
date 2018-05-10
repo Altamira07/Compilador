@@ -82,7 +82,7 @@ public class Editor extends Action
         colorDefault = lexico.getBackground();
         sintactico = new JButton("Sintactico");
         sintactico.addActionListener(new Oyente(ActionForButtons.SINTACTICO));
-        semantico = new JButton("Semantico");
+        semantico = new JButton("semantico.Semantico");
         semantico.addActionListener(new Oyente(ActionForButtons.SEMANTICO));
         toolBar.add(lexico);
         toolBar.add(sintactico);

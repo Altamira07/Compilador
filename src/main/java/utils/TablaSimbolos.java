@@ -1,6 +1,8 @@
 package utils;
 
 import lexico.Estados;
+import utils.models.Etiquetas;
+import utils.models.Identificador;
 import utils.models.Token;
 
 import javax.swing.table.DefaultTableModel;
@@ -25,6 +27,37 @@ public class TablaSimbolos {
 			fin.sig = nuevo;
 			fin = nuevo;
 		}
+	}
+
+	public static int search(String lexema)
+	{
+		Token tokens[] = toArray();
+		System.out.println(lexema);
+		for(Token t: tokens)
+		{
+			if(t.getIdentificador().equals(lexema))
+				return  t.getId();
+		}
+		return -1;
+	}
+
+
+
+	public static void main(String args[])
+	{
+		insertar(new Identificador(Etiquetas.IDENTIFICADOR,10,10,"$Hola"));
+		insertar(new Identificador(Etiquetas.IDENTIFICADOR,10,11,"$Hola2"));
+		insertar(new Identificador(Etiquetas.IDENTIFICADOR,10,12,"$Hola3"));
+		insertar(new Identificador(Etiquetas.IDENTIFICADOR,10,12,"$Hola4"));
+
+		insertar(new Identificador(Etiquetas.VALOR_STRING,10,13,"\"Hola mundo\""));
+		insertar(new Identificador(Etiquetas.IDENTIFICADOR,10,14,"\"Hola mundo\""));
+
+
+		int id = search("$Hola4");
+		System.out.println("Econtre: "+id);
+		insertar(new Identificador(Etiquetas.IDENTIFICADOR,10,12,"$Hola4"));
+
 	}
 
 

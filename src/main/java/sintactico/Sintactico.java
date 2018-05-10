@@ -1,6 +1,8 @@
 package sintactico;
 
 import lexico.Lexico;
+import semantico.Registro;
+import semantico.TablaSemantica;
 import utils.PilaErrores;
 import utils.TablaSimbolos;
 import utils.models.Etiquetas;
@@ -91,7 +93,7 @@ public class Sintactico {
 
     void bloque(Token t){
         pilaLlaves.push(t);
-        System.out.println("Sub bloque" + pilaLlaves.size());
+        //System.out.println("Sub bloque" + pilaLlaves.size());
         boolean pop = false;
         Token token;
         while (!pop && i < tokens.length)
@@ -99,7 +101,7 @@ public class Sintactico {
             token = siguiente();
             if(token !=null && token.getEtiqueta() == Etiquetas.CIERRA_LLAVE && !pilaLlaves.empty())
             {
-                System.out.println("Saliendo del subloque " + pilaLlaves.size());
+                //System.out.println("Saliendo del subloque " + pilaLlaves.size());
                 pilaLlaves.pop();
                 pop = true;
                 continue;
@@ -124,11 +126,16 @@ public class Sintactico {
     public void asignacion()
     {
         Token token = actual();
+        Registro r;
         if(token !=null && (token.getEtiqueta() == Etiquetas.STRING || token.getEtiqueta() == Etiquetas.INT))
         {
+            r = new Registro();
+            r.setTipo(token);
             token = siguiente();
             if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
             {
+                r.setIdentificador(token);
+                TablaSemantica.insertar(r);
                 token = siguiente();
                 if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION)
                 {
@@ -138,6 +145,9 @@ public class Sintactico {
             }else PilaErrores.pushErrorSintactico(207,token.getLinea(),i);
         } else if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
         {
+            r = new Registro();
+            r.setIdentificador(token);
+            TablaSemantica.insertar(r);
             token = siguiente();
             if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION){
                 expAritmetias();
@@ -173,14 +183,14 @@ public class Sintactico {
             switch (actual)
             {
                 case Q1:
-                    if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT || token.getEtiqueta() == Etiquetas.VALOR_STRING  )
+                    if(token !=null && (token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT || token.getEtiqueta() == Etiquetas.VALOR_STRING  ))
                     {
                         actual = Q2;
                     }else
                         PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
                     break;
                 case Q2:
-                    if (token !=null && token.getEtiqueta() == Etiquetas.SUMA || token.getEtiqueta() == Etiquetas.RESTA || token.getEtiqueta() == Etiquetas.MULTIPLICACION || token.getEtiqueta() == Etiquetas.DIVISION )
+                    if (token !=null && (token.getEtiqueta() == Etiquetas.SUMA || token.getEtiqueta() == Etiquetas.RESTA || token.getEtiqueta() == Etiquetas.MULTIPLICACION || token.getEtiqueta() == Etiquetas.DIVISION ))
                     {
                         actual = Q1;
                     }else if(token !=null && token.getEtiqueta() == Etiquetas.PUNTO_COMA) continue;
@@ -235,14 +245,18 @@ public class Sintactico {
                 switch (actual)
                 {
                     case Q1:
-                        if(token !=null &&token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT)
-                           actual = Q2;
+                        if(token !=null && (token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT))
+                        {
+                            if(token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
+                                TablaSemantica.insertar(new Registro(null,null,token));
+                            actual = Q2;
+                        }
                         else PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
                         break;
                     case Q2:
-                        if(token !=null &&token.getEtiqueta() == Etiquetas.MENOR || token.getEtiqueta() == Etiquetas.MAYOR )
+                        if(token !=null &&(token.getEtiqueta() == Etiquetas.MENOR || token.getEtiqueta() == Etiquetas.MAYOR) )
                             actual = Q3;
-                        else if(token !=null &&token.getEtiqueta() == Etiquetas.ASIGNACION || token.getEtiqueta() == Etiquetas.DIFERENTE)
+                        else if(token !=null &&(token.getEtiqueta() == Etiquetas.ASIGNACION || token.getEtiqueta() == Etiquetas.DIFERENTE))
                             actual = Q5;
                         else if(token !=null &&token.getEtiqueta() == Etiquetas.AND)
                             actual = Q6;
@@ -252,7 +266,7 @@ public class Sintactico {
 
                         break;
                     case Q3:
-                        if(token !=null &&token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT)
+                        if(token !=null && (token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT))
                             actual = Q2;
                         else if(token !=null &&token.getEtiqueta() == Etiquetas.ASIGNACION)
                             actual = Q4;
@@ -260,7 +274,7 @@ public class Sintactico {
                             PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
                         break;
                     case Q4:
-                        if(token !=null &&token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT)
+                        if(token !=null && (token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT))
                             actual = Q2;
                         else
                             PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
@@ -289,15 +303,13 @@ public class Sintactico {
                 anterior();
             else if(token !=null &&token.getEtiqueta() == Etiquetas.ABRE_LLAVE )
             {
-                System.out.println("Bloque de un control");
+                //System.out.println("Bloque de un control");
                 bloque(token);
             }
         }else
         {
-
             PilaErrores.pushErrorSintactico(200,token.getLinea(),i);
         }
-
         if(!pila.empty())
         {
             while (!pila.empty())
