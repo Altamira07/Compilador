@@ -1,5 +1,6 @@
 package sintactico;
 
+import com.sun.corba.se.impl.interceptors.PICurrent;
 import lexico.Lexico;
 import semantico.Registro;
 import semantico.TablaSemantica;
@@ -44,7 +45,7 @@ public class Sintactico {
 
     public void analizar()
     {
-        init();;
+        init();
     }
 
 
@@ -107,6 +108,7 @@ public class Sintactico {
                 continue;
             }else {
                 asignacion();
+                print();
                 control();
             }
         }
@@ -156,7 +158,20 @@ public class Sintactico {
     }
 
 
+    public void print()
+    {
 
+        Token token = actual();
+        if(token.getEtiqueta() == Etiquetas.PRINT)
+        {
+            token = siguiente();
+            if(token.getEtiqueta() == Etiquetas.ABRE_PARENTESIS)
+            {
+                i--;
+                expAritmetias();
+            }else PilaErrores.pushErrorSintactico(200,token.getLinea(),0);
+        }
+    }
 
     public void expAritmetias()
     {
@@ -213,7 +228,6 @@ public class Sintactico {
         }
 
     }
-
 
     public void expBooleana()
     {
