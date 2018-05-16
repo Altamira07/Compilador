@@ -76,9 +76,9 @@ public class Semantico {
                 }
                 else
                     PilaErrores.pushErrrorSemantico(300,registro.getIdentificador(),registro.getIdentificador().getLinea());
-            }else if(!isDeclarado(registro.getIdentificador()))
+            }else if(registro.getIdentificador() !=null && !isDeclarado(registro.getIdentificador()))
                 PilaErrores.pushErrrorSemantico(301,registro.getIdentificador(),registro.getIdentificador().getLinea());
-            else{
+            else if(registro.getIdentificador() !=null && isDeclarado(registro.getIdentificador())){
                 Token tipoDato;
                 Token declarado = declaradoComo(registro.getIdentificador());
                 if(registro.getValores() != null && registro.getValores().size() > 0)
@@ -95,6 +95,9 @@ public class Semantico {
                         continue;
                     }
                 }
+            }else {
+                if(registro.getValores().size()>0)
+                    validarExpresionBooleana(registro.getValores());
             }
         }
     }
@@ -135,6 +138,31 @@ public class Semantico {
         }
 
         return pila.pop();
+    }
+
+    void validarExpresionBooleana(ArrayList<Token> valores)
+    {
+        Stack<Token> pila = new Stack<>();
+        System.out.println(valores.size());
+        for(int i = 0 ; i<valores.size(); i++)
+        {
+            Token valor = valores.get(i);
+            if(valor.getEtiqueta() == Etiquetas.VALOR_INT || valor.getEtiqueta() == Etiquetas.IDENTIFICADOR)
+                pila.push(valor);
+        }
+        while (!pila.empty())
+        {
+            Token valor = pila.pop();
+            if(valor.getEtiqueta() == Etiquetas.IDENTIFICADOR)
+            {
+                if (!isDeclarado(valor))
+                    PilaErrores.pushErrrorSemantico(301,valor,valor.getLinea());
+                else if(declaradoComo(valor).getEtiqueta() != Etiquetas.VALOR_INT)
+                    PilaErrores.pushErrrorSemantico(305,valor,valor.getLinea());
+            }else if(valor.getEtiqueta() != Etiquetas.VALOR_INT)
+                    PilaErrores.pushErrrorSemantico(306,valor,valor.getLinea());
+        }
+
     }
 
     Token declaradoComo(Token identificador)
