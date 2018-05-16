@@ -34,8 +34,9 @@ public class PilaErrores {
 
 		errores.put(300,"Ya habia sido declarado");
 		errores.put(301,"No ha sido declarado");
-
-
+		errores.put(302,"No se pude asignar un valor tipo STRING a un identificador tipo INT");
+		errores.put(303,"No se pude asignar un valor tipo INT a un identificador tipo STRING");
+		errores.put(304,"No se le ha asignado algun a valor a: ");
 	}
 
 	public PilaErrores()

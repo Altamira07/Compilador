@@ -142,8 +142,11 @@ public class Sintactico {
                 if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION)
                 {
                     registro.setValores(expAritmetias());
+                    TablaSemantica.insertar(registro);
                 }else if(token !=null && token.getEtiqueta() != Etiquetas.PUNTO_COMA)
                     PilaErrores.pushErrorSintactico(213,token.getLinea(),i);
+                else TablaSemantica.insertar(registro);
+
             }else PilaErrores.pushErrorSintactico(207,token.getLinea(),i);
         }
         else if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
@@ -153,7 +156,9 @@ public class Sintactico {
             token = siguiente();
             if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION)
             {
-                    registro.setValores(expAritmetias());
+
+                registro.setValores(expAritmetias());
+                TablaSemantica.insertar(registro);
             }else PilaErrores.pushErrorSintactico(206,token.getLinea(),i);
         }
     }
