@@ -1,12 +1,13 @@
 package sintactico;
 
-import com.sun.corba.se.impl.interceptors.PICurrent;
+
 import lexico.Lexico;
 import semantico.Registro;
 import semantico.TablaSemantica;
 import utils.PilaErrores;
 import utils.TablaSimbolos;
 import utils.models.Etiquetas;
+import utils.models.Identificador;
 import utils.models.Token;
 
 import java.io.File;
@@ -128,35 +129,34 @@ public class Sintactico {
     public void asignacion()
     {
         Token token = actual();
-        Registro r;
+        Registro registro;
         if(token !=null && (token.getEtiqueta() == Etiquetas.STRING || token.getEtiqueta() == Etiquetas.INT))
         {
-            r = new Registro();
-            r.setTipo(token);
+            registro = new Registro();
+            registro.setTipoDato(token);
             token = siguiente();
             if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
             {
-                r.setIdentificador(token);
-                TablaSemantica.insertar(r);
+                registro.setIdentificador(token);
                 token = siguiente();
                 if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION)
                 {
-                    expAritmetias();
+                    registro.setValores(expAritmetias());
                 }else if(token !=null && token.getEtiqueta() != Etiquetas.PUNTO_COMA)
                     PilaErrores.pushErrorSintactico(213,token.getLinea(),i);
             }else PilaErrores.pushErrorSintactico(207,token.getLinea(),i);
-        } else if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
+        }
+        else if(token !=null && token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
         {
-            r = new Registro();
-            r.setIdentificador(token);
-            TablaSemantica.insertar(r);
+            registro = new Registro();
+            registro.setIdentificador(token);
             token = siguiente();
-            if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION){
-                expAritmetias();
+            if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION)
+            {
+                    registro.setValores(expAritmetias());
             }else PilaErrores.pushErrorSintactico(206,token.getLinea(),i);
         }
     }
-
 
     public void print()
     {
@@ -173,22 +173,25 @@ public class Sintactico {
         }
     }
 
-    public void expAritmetias()
+    public ArrayList<Token> expAritmetias()
     {
         Token token;
         Stack<Integer> pos = new Stack<>();
+        ArrayList<Token> valores = new ArrayList<>();
         EstadoSintactico actual = Q1;
         do
         {
             token = siguiente();
             if(token !=null && token.getEtiqueta() == Etiquetas.ABRE_PARENTESIS)
             {
+                valores.add(token);
                 pila.push(token);
                 pos.push(i);
                 continue;
             }
             if(token !=null && token.getEtiqueta() == Etiquetas.CIERRA_PARENTESIS && !pila.empty())
             {
+                valores.add(token);
                 pila.pop();
                 continue;
             }else if(token !=null && token.getEtiqueta() == Etiquetas.CIERRA_PARENTESIS){
@@ -200,6 +203,7 @@ public class Sintactico {
                 case Q1:
                     if(token !=null && (token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT || token.getEtiqueta() == Etiquetas.VALOR_STRING  ))
                     {
+                        valores.add(token);
                         actual = Q2;
                     }else
                         PilaErrores.pushErrorSintactico(211,token.getLinea(),i);
@@ -207,6 +211,7 @@ public class Sintactico {
                 case Q2:
                     if (token !=null && (token.getEtiqueta() == Etiquetas.SUMA || token.getEtiqueta() == Etiquetas.RESTA || token.getEtiqueta() == Etiquetas.MULTIPLICACION || token.getEtiqueta() == Etiquetas.DIVISION ))
                     {
+                        valores.add(token);
                         actual = Q1;
                     }else if(token !=null && token.getEtiqueta() == Etiquetas.PUNTO_COMA) continue;
                     break;
@@ -226,7 +231,7 @@ public class Sintactico {
         {
             PilaErrores.pushErrorSintactico(204,tokens[i-1].getLinea(),i);
         }
-
+        return valores;
     }
 
     public void expBooleana()
@@ -261,8 +266,6 @@ public class Sintactico {
                     case Q1:
                         if(token !=null && (token.getEtiqueta() == Etiquetas.IDENTIFICADOR || token.getEtiqueta() == Etiquetas.VALOR_INT))
                         {
-                            if(token.getEtiqueta() == Etiquetas.IDENTIFICADOR)
-                                TablaSemantica.insertar(new Registro(null,null,token));
                             actual = Q2;
                         }
                         else PilaErrores.pushErrorSintactico(211,token.getLinea(),i);

@@ -1,28 +1,28 @@
 package semantico;
 
 
+import utils.models.Token;
+
 import java.util.ArrayList;
 
 public class TablaSemantica {
-    public static ArrayList<Registro> tabla = new ArrayList<>();
-    public static  void insertar(Registro r)
-    {
-        System.out.println("Insertando");
-        tabla.add(r);
-    }
-    public static void limipar()
-    {
-        tabla = new ArrayList<>();
-    }
-    public static Registro[] toArray()
-    {
-        Registro r[] = new Registro[tabla.size()];
 
-        for( int i = 0; i < tabla.size(); i++)
-            r[i] = tabla.get(i);
-
-
-        return r;
+    public static ArrayList<Registro> valores = new ArrayList<>();
+    public static  void  limpiar()
+    {
+        valores = new ArrayList<>();
     }
 
+    public static void insertar(Registro registro)
+    {
+        valores.add(registro);
+    }
+    public static Registro []toArray()
+    {
+        Registro registros[] = new Registro[valores.size()];
+        for(int i = 0; i < valores.size(); i++)
+            registros[i] = valores.get(i);
+
+        return registros;
+    }
 }

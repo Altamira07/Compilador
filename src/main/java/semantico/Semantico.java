@@ -5,12 +5,16 @@ import com.sun.corba.se.impl.interceptors.PICurrent;
 import lexico.Lexico;
 import sintactico.Sintactico;
 import utils.PilaErrores;
+import utils.models.Etiquetas;
+import utils.models.Identificador;
+import utils.models.TInt;
 import utils.models.Token;
 
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.ArrayList;
 import java.util.SortedMap;
+import java.util.Stack;
 
 public class Semantico {
 
@@ -43,30 +47,23 @@ public class Semantico {
 
     public Semantico()
     {
-        registros = TablaSemantica.toArray();
         System.out.println("_________");
-        preAnalisis();
+        registros = TablaSemantica.toArray();
+        analizar();
     }
 
-
-    public void preAnalisis()
+    public void analizar()
     {
 
-        for(int i = 0 ; i< registros.length; i++)
-        {
-            if(registros[i].getTipo() != null)
-                if(!isDeclarado(registros[i].getIdentificador()))
-                {
-                    declarados.add(registros[i].getIdentificador());
-                }else
-                    PilaErrores.pushErrrorSemantico(300,registros[i].identificador,registros[i].identificador.getLinea());
-            else
-                if(!isDeclarado(registros[i].getIdentificador()))
-                    PilaErrores.pushErrrorSemantico(301,registros[i].identificador,registros[i].identificador.getLinea());
-
-        }
     }
 
+    void validarString(){
+
+    }
+
+    void validarInt() {
+
+    }
     public boolean isDeclarado(Token t)
     {
         for(Token token:declarados)

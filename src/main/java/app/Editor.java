@@ -209,7 +209,7 @@ public class Editor extends Action
         cambiarColores(ActionForButtons.SEMANTICO, colorDefault);
         TablaSimbolos.limpiar();
         PilaErrores.limpiar();
-        TablaSemantica.limipar();
+        TablaSemantica.limpiar();
 
     }
     @Override

@@ -40,6 +40,9 @@ public enum Etiquetas {
     CIERRA_PARENTESIS(17),
     ABRE_LLAVE(18),
     CIERRA_LLAVE(19),
+
+    //Para semantico
+    VALOR_DESCONOCIDO(-1)
     ;
 
     private final int etiqueta;
