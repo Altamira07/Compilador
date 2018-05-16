@@ -7,6 +7,7 @@ import sintactico.Sintactico;
 import utils.PilaErrores;
 import utils.models.*;
 
+import javax.jws.soap.SOAPBinding;
 import java.io.File;
 import java.io.RandomAccessFile;
 import java.util.*;
@@ -95,10 +96,20 @@ public class Semantico {
                         continue;
                     }
                 }
-            }else {
+            }else if(registro.getEstructura() != null){
+                if(registro.getValores().size()>0) {
+                    Token tipoDato = validarAsignacion(registro.getValores());
+                    if (tipoDato.getEtiqueta() != Etiquetas.VALOR_STRING)
+                    {
+                        PilaErrores.pushErrrorSemantico(307,registro.getEstructura(),registro.getEstructura().getLinea());
+                    }
+                }
+
+            }else
+
                 if(registro.getValores().size()>0)
                     validarExpresionBooleana(registro.getValores());
-            }
+
         }
     }
 
@@ -125,8 +136,15 @@ public class Semantico {
             else {
                 if(valor.getEtiqueta() == Etiquetas.ABRE_PARENTESIS || valor.getEtiqueta() ==Etiquetas.CIERRA_PARENTESIS)
                     continue;
-                Token temp = pila.pop();
                 valor = valores.get(i+1);
+                if(valor.getEtiqueta()==Etiquetas.IDENTIFICADOR)
+                {
+                    if(!isDeclarado(valor))
+                        PilaErrores.pushErrrorSemantico(301,valor,valor.getLinea());
+                    else
+                        valor = declaradoComo(valor);
+                }
+                Token temp = pila.pop();
                 i++;
                 if((temp.getEtiqueta() == Etiquetas.VALOR_STRING && valor.getEtiqueta() == Etiquetas.VALOR_INT)
                         || (temp.getEtiqueta() == Etiquetas.VALOR_INT && valor.getEtiqueta() == Etiquetas.VALOR_STRING)
@@ -134,6 +152,7 @@ public class Semantico {
                     pila.push(new TString(Etiquetas.VALOR_STRING,temp.getLinea(),0,""));
                 else if(valor.getEtiqueta() == Etiquetas.VALOR_INT && temp.getEtiqueta() == Etiquetas.VALOR_INT)
                     pila.push(new TInt(Etiquetas.VALOR_INT,valor.getLinea(),0,0));
+                else pila.push(temp);
             }
         }
 

@@ -39,6 +39,7 @@ public class PilaErrores {
 		errores.put(304,"No se le ha asignado algun a valor a: ");
 		errores.put(305,"No se puede hacer una comparacion con un identificador tipo STRING: ");
 		errores.put(306,"Solo se aceptan valores tipo INT");
+		errores.put(307,"Solo se aceptan valores tipo STRING");
 	}
 
 	public PilaErrores()

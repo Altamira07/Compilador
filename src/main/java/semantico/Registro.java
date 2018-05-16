@@ -9,6 +9,7 @@ public class Registro {
     Token identificador;
     Token tipoDato;
     ArrayList<Token> valores;
+    Token estructura;
     public Token getIdentificador() {
         return identificador;
     }
@@ -31,5 +32,13 @@ public class Registro {
 
     public void setValores(ArrayList<Token> valores) {
         this.valores = valores;
+    }
+
+    public Token getEstructura() {
+        return estructura;
+    }
+
+    public void setEstructura(Token estructura) {
+        this.estructura = estructura;
     }
 }

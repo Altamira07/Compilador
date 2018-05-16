@@ -1,6 +1,7 @@
 package sintactico;
 
 
+import javafx.scene.control.Tab;
 import lexico.Lexico;
 import semantico.Registro;
 import semantico.TablaSemantica;
@@ -170,13 +171,17 @@ public class Sintactico {
     {
 
         Token token = actual();
+        Registro registro;
         if(token.getEtiqueta() == Etiquetas.PRINT)
         {
+            registro = new Registro();
+            registro.setEstructura(token);
             token = siguiente();
             if(token.getEtiqueta() == Etiquetas.ABRE_PARENTESIS)
             {
                 i--;
-                expAritmetias();
+                registro.setValores(expAritmetias());
+                TablaSemantica.insertar(registro);
             }else PilaErrores.pushErrorSintactico(200,token.getLinea(),0);
         }
     }
