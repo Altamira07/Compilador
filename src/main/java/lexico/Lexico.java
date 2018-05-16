@@ -242,10 +242,9 @@ public class Lexico {
 				sb = new StringBuilder();
 				sb.append(caracter);
 				ID++;
-				caracter = obtenerCaracter();
 				do {
-					sb.append(caracter);
 					caracter = obtenerCaracter();
+					sb.append(caracter);
 				} while (caracter != '"' && caracter != '\u0000');
 				if(caracter != '\u0000')
 				{
