@@ -80,7 +80,6 @@ public abstract class Action  {
                 cambiarColores(ActionForButtons.SEMANTICO,Color.RED);
                 verErrores();
             }
-
         }
     }
     abstract void habilitar(ActionForButtons action,boolean b);

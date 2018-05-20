@@ -1,8 +1,11 @@
 package app;
 
 
+import app.custom.editor.CustomEditor;
+import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
 import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import semantico.TablaSemantica;
 import utils.PilaErrores;
@@ -95,7 +98,10 @@ public class Editor extends Action
     private RTextScrollPane getEditor()
     {
         editor = new RSyntaxTextArea(   30,60);
-        editor.setSyntaxEditingStyle(SyntaxConstants.SYNTAX_STYLE_JAVA);
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
+        atmf.putMapping("text/custom", "app.custom.editor.CustomEditor");
+        editor.setSyntaxEditingStyle("text/custom");
+
         editor.setCodeFoldingEnabled(true);
         RTextScrollPane sp = new RTextScrollPane(editor);
         return sp;
