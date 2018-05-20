@@ -72,7 +72,14 @@ public class Editor extends Action
         mArchivo.addSeparator();
         mArchivo.add(salir);
 
+        JMenu ayuda = new JMenu("Ayuda");
+
+        JMenuItem verBNF = new JMenuItem("ver BNF");
+        verBNF.addActionListener(new Oyente(ActionForButtons.VERBNF));
+        ayuda.add(verBNF);
+
         menuBar.add(mArchivo);
+        menuBar.add(ayuda);
         return menuBar;
     }
 

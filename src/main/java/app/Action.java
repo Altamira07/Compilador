@@ -123,6 +123,9 @@ public abstract class Action  {
                 case SALIR:
                     salir();
                     break;
+                case VERBNF:
+                    new BNF().setVisible(true);
+                    break;
 
             }
         }

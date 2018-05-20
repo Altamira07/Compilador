@@ -13,6 +13,7 @@ public enum ActionForButtons {
     CAMBIAR_SEMANTICO,
     EXITO,
     FRACASO,
+    VERBNF,
     WAIT;
 
 }
