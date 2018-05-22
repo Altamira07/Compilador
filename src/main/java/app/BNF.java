@@ -8,7 +8,7 @@ import javax.swing.*;
 import java.awt.*;
 
 public class BNF extends JFrame {
-    final String bnf = "<programa> ::= 'main', '(', ')', <sentencia>\n" +
+    final String bnf = "<programa> ::= 'init', '(', ')', <sentencia>\n" +
             "<sentencia> ::= <bloque> | <if> | <while> | <read> | <while> | <print> \n" +
             "                   | <asignacion> | <declaracion> | <expresion>\n" +
             "\n" +
