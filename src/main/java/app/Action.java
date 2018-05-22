@@ -126,6 +126,8 @@ public abstract class Action  {
                 case VERBNF:
                     new BNF().setVisible(true);
                     break;
+                case ACERCA_DE:
+                    break;
 
             }
         }

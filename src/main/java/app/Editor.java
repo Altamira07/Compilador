@@ -75,10 +75,15 @@ public class Editor extends Action
         JMenu ayuda = new JMenu("Ayuda");
 
         JMenuItem verBNF = new JMenuItem("ver BNF");
+        JMenuItem acerca = new JMenuItem("Acerca de");
+        acerca.addActionListener(new Oyente(ActionForButtons.ACERCA_DE));
         verBNF.addActionListener(new Oyente(ActionForButtons.VERBNF));
         ayuda.add(verBNF);
+        ayuda.addSeparator();
+        ayuda.add(acerca);
 
         menuBar.add(mArchivo);
+
         menuBar.add(ayuda);
         return menuBar;
     }

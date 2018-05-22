@@ -149,7 +149,10 @@ public class Semantico {
                 if((temp.getEtiqueta() == Etiquetas.VALOR_STRING && valor.getEtiqueta() == Etiquetas.VALOR_INT)
                         || (temp.getEtiqueta() == Etiquetas.VALOR_INT && valor.getEtiqueta() == Etiquetas.VALOR_STRING)
                         || (temp.getEtiqueta() == Etiquetas.VALOR_STRING && valor.getEtiqueta() == Etiquetas.VALOR_STRING)  )
+                {
+                    PilaErrores.pushErrrorSemantico(309,valor,valor.getLinea());
                     pila.push(new TString(Etiquetas.VALOR_STRING,temp.getLinea(),0,""));
+                }
                 else if(valor.getEtiqueta() == Etiquetas.VALOR_INT && temp.getEtiqueta() == Etiquetas.VALOR_INT)
                     pila.push(new TInt(Etiquetas.VALOR_INT,valor.getLinea(),0,0));
                 else pila.push(temp);
