@@ -40,7 +40,7 @@ public class PilaErrores {
 		errores.put(305,"No se puede hacer una comparacion con un identificador tipo STRING: ");
 		errores.put(306,"Solo se aceptan valores tipo INT");
 		errores.put(307,"Solo se aceptan valores tipo STRING");
-		errores.put(309,"No se puede hacer operaciones aritmeticas de este tipo STRING con INT");
+		errores.put(309,"No se puede hacer operaciones aritmeticas con VALOR_STRING");
 	}
 
 	public PilaErrores()
