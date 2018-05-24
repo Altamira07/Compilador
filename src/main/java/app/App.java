@@ -1,6 +1,5 @@
 package app;
 
-import java.util.StringTokenizer;
 
 public class App
 {
@@ -9,6 +8,5 @@ public class App
 
         new Editor().setVisible(true);
     }
-
 
 }

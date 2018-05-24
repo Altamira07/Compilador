@@ -34,7 +34,7 @@ public class Sintactico {
     public static void main(String[] arg)
     {
         try {
-            File archivo = new File("palabras");
+            File archivo = new File("programa4.txt");
             RandomAccessFile raf = new RandomAccessFile(archivo,"r");
             new Lexico(raf);
             if(PilaErrores.vacia())
@@ -129,9 +129,6 @@ public class Sintactico {
             registro = new Registro();
             registro.setValores(expBooleana());
             TablaSemantica.insertar(registro);
-            token = actual();
-            if(token == null || token.getEtiqueta() != Etiquetas.ABRE_LLAVE)
-                PilaErrores.pushErrorSintactico(202,anterior().getLinea(),0);
 
         }
     }
