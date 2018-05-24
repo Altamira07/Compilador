@@ -15,6 +15,10 @@ public enum ActionForButtons {
     FRACASO,
     ACERCA_DE,
     VERBNF,
+    DOC_SINTACTICO,
+    DOC_SEMANTICO,
+    DOC_LEXICO,
     WAIT;
+
 
 }

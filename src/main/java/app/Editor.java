@@ -75,9 +75,21 @@ public class Editor extends Action
         JMenu ayuda = new JMenu("Ayuda");
 
         JMenuItem verBNF = new JMenuItem("ver BNF");
+        JMenuItem docSintacito = new JMenuItem("Acerca de Sintactico");
+        docSintacito.addActionListener(new Oyente(ActionForButtons.DOC_SINTACTICO));
+
+        JMenuItem docSemantico = new JMenuItem("Acerca de Semantico");
+        docSemantico.addActionListener(new Oyente(ActionForButtons.DOC_SEMANTICO));
+
+        JMenuItem docLexico = new JMenuItem("Acerca de Lexico");
+        docLexico.addActionListener(new Oyente(ActionForButtons.DOC_LEXICO));
         JMenuItem acerca = new JMenuItem("Acerca de");
         acerca.addActionListener(new Oyente(ActionForButtons.ACERCA_DE));
         verBNF.addActionListener(new Oyente(ActionForButtons.VERBNF));
+        ayuda.add(docLexico);
+        ayuda.add(docSintacito);
+        ayuda.add(docSemantico);
+        ayuda.addSeparator();
         ayuda.add(verBNF);
         ayuda.addSeparator();
         ayuda.add(acerca);

@@ -128,6 +128,15 @@ public abstract class Action  {
                     break;
                 case ACERCA_DE:
                     break;
+                case DOC_LEXICO:
+                    PDF.ver("recursos/A2.pdf");
+                    break;
+                case DOC_SEMANTICO:
+                    PDF.ver("recursos/A4.pdf");
+                    break;
+                case DOC_SINTACTICO:
+                    PDF.ver("recursos/A3.pdf");
+                    break;
 
             }
         }
