@@ -102,8 +102,9 @@ public class PilaErrores {
 	public static String getErrors()
 	{
 		String errores = "";
+
 		while (!vacia())
-			errores+=pop()+"\n";
+			errores= pop()+"\n" + errores;
 		return errores;
 	}
 
