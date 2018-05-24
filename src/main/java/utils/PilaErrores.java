@@ -62,7 +62,7 @@ public class PilaErrores {
 	public static  void pushErrrorSemantico(int id,Token i,int linea)
 	{
 		Nodo nuevo;
-		String error = "id: " + id + " "+errores.get(id)+ " "+ i.getIdentificador()+" linea: "+linea;
+		String error = "Error id: " + id + " "+errores.get(id)+ " "+ i.getIdentificador()+" linea: "+linea;
 		if( vacia() )
 			principal = new Nodo(error);
 		else {
@@ -75,7 +75,7 @@ public class PilaErrores {
 	public static void pushErrorSintactico(int id,int linea,int posicion)
 	{
 		Nodo nuevo;
-		String error = "id: " + id + " Se esperaba: "+errores.get(id)+ " linea: "+linea;
+		String error = "Error id: " + id + " Se esperaba: "+errores.get(id)+ " linea: "+linea;
 		if( vacia() )
 			principal = new Nodo(error);
 		else {
@@ -87,7 +87,7 @@ public class PilaErrores {
 	
 	public static void push(int numError,String caracteres,int linea,int posicion) {
 		Nodo nuevo;
-		String error =  numError +" "+  errores.get(numError)+ caracteres + " posicion: "+posicion + " linea: "+linea;
+		String error = "Error id: "+  numError +" "+  errores.get(numError)+ caracteres + " posicion: "+posicion + " linea: "+linea;
 		if( vacia() )
 			principal = new Nodo(error);
 		else {

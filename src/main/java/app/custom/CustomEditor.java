@@ -1,9 +1,6 @@
-package app.custom.editor;
+package app.custom;
 
-import org.fife.ui.rsyntaxtextarea.AbstractTokenMaker;
-import org.fife.ui.rsyntaxtextarea.RSyntaxUtilities;
-import org.fife.ui.rsyntaxtextarea.Token;
-import org.fife.ui.rsyntaxtextarea.TokenMap;
+import org.fife.ui.rsyntaxtextarea.*;
 
 import javax.swing.text.Segment;
 
@@ -16,6 +13,9 @@ public class CustomEditor extends AbstractTokenMaker {
         tokenMap.put("init()",Token.DATA_TYPE);
         tokenMap.put("String",Token.RESERVED_WORD);
         tokenMap.put("int",Token.RESERVED_WORD);
+
+        tokenMap.put("Error",Token.LITERAL_BACKQUOTE);
+        tokenMap.put("id:",Token.LITERAL_BACKQUOTE);
 
 
         tokenMap.put("print",Token.FUNCTION);

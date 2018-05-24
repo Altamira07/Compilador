@@ -1,10 +1,9 @@
 package app;
 
 
-import app.custom.editor.CustomEditor;
 import org.fife.ui.rsyntaxtextarea.AbstractTokenMakerFactory;
 import org.fife.ui.rsyntaxtextarea.RSyntaxTextArea;
-import org.fife.ui.rsyntaxtextarea.SyntaxConstants;
+import org.fife.ui.rsyntaxtextarea.SyntaxScheme;
 import org.fife.ui.rsyntaxtextarea.TokenMakerFactory;
 import org.fife.ui.rtextarea.RTextScrollPane;
 import semantico.TablaSemantica;
@@ -20,12 +19,14 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Scanner;
 
+import static org.fife.ui.rsyntaxtextarea.TokenTypes.LITERAL_BACKQUOTE;
+
 public class Editor extends Action
 {
     JFrame ventana;
     RSyntaxTextArea editor;
     Color colorDefault;
-    JTextArea consola;
+    RSyntaxTextArea consola;
     DefaultTableModel modelo;
     JButton lexico,sintactico,semantico;
     public Editor()
@@ -123,7 +124,7 @@ public class Editor extends Action
     {
         editor = new RSyntaxTextArea(   30,60);
         AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory)TokenMakerFactory.getDefaultInstance();
-        atmf.putMapping("text/custom", "app.custom.editor.CustomEditor");
+        atmf.putMapping("text/custom", "app.custom.CustomEditor");
         editor.setSyntaxEditingStyle("text/custom");
 
         editor.setCodeFoldingEnabled(true);
@@ -133,8 +134,15 @@ public class Editor extends Action
 
     private JPanel getConsola()
     {
-        consola = new JTextArea(5, 5);
+        consola = new RSyntaxTextArea(5,5);
+        AbstractTokenMakerFactory atmf = (AbstractTokenMakerFactory) TokenMakerFactory.getDefaultInstance();
+        //atmf.putMapping("text/custom","app.custom.CustomConsole");
+        SyntaxScheme scheme = consola.getSyntaxScheme();
+        scheme.getStyle(LITERAL_BACKQUOTE).foreground = Color.RED;
+        consola.setSyntaxEditingStyle("text/custom");
+        consola.setCodeFoldingEnabled(false);
         consola.setEditable(false);
+        consola.setEOLMarkersVisible(false);
         JLabel lblConsola = new JLabel("Consola");
         JPanel pnlConsola = new JPanel(new BorderLayout());
         pnlConsola.add(lblConsola, BorderLayout.NORTH);
