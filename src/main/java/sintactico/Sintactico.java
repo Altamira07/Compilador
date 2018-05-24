@@ -95,6 +95,7 @@ public class Sintactico {
     }
 
     void bloque(Token t){
+
         pilaLlaves.push(t);
         //System.out.println("Sub bloque" + pilaLlaves.size());
         boolean pop = false;
@@ -128,7 +129,10 @@ public class Sintactico {
             registro = new Registro();
             registro.setValores(expBooleana());
             TablaSemantica.insertar(registro);
-            //token = actual();
+            token = actual();
+            if(token == null || token.getEtiqueta() != Etiquetas.ABRE_LLAVE)
+                PilaErrores.pushErrorSintactico(202,anterior().getLinea(),0);
+
         }
     }
 
@@ -409,8 +413,8 @@ public class Sintactico {
     }
     Token anterior()
     {
-        i--;
-        return  tokens[i];
+
+        return  tokens[i-1];
     }
     Token actual()
     {
