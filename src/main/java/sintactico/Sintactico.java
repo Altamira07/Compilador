@@ -114,6 +114,9 @@ public class Sintactico {
                 control();
             }
         }
+
+        if(i == tokens.length && !pila.empty())
+            PilaErrores.pushErrorSintactico(203,pilaLlaves.pop().getLinea(),0);
     }
 
     public void control()
@@ -132,10 +135,12 @@ public class Sintactico {
 
     public void asignacion()
     {
+
         Token token = actual();
         Registro registro;
         if(token !=null && (token.getEtiqueta() == Etiquetas.STRING || token.getEtiqueta() == Etiquetas.INT))
         {
+
             registro = new Registro();
             registro.setTipoDato(token);
             token = siguiente();
@@ -146,9 +151,22 @@ public class Sintactico {
                 if(token !=null && token.getEtiqueta() == Etiquetas.ASIGNACION)
                 {
                     registro.setValores(expAritmetias());
+
+                    System.out.println(actual());
+                    if(actual() == null || actual().getEtiqueta() != Etiquetas.PUNTO_COMA)
+                    {
+                        if (actual() == null)
+                        {
+                            i--;
+                        }
+                        PilaErrores.pushErrorSintactico(204,anterior().getLinea()-1,0);
+                    }
                     TablaSemantica.insertar(registro);
+
                 }else if(token !=null && token.getEtiqueta() != Etiquetas.PUNTO_COMA)
+                {
                     PilaErrores.pushErrorSintactico(213,token.getLinea(),i);
+                }
                 else TablaSemantica.insertar(registro);
 
             }else PilaErrores.pushErrorSintactico(207,token.getLinea(),i);
@@ -172,7 +190,7 @@ public class Sintactico {
 
         Token token = actual();
         Registro registro;
-        if(token.getEtiqueta() == Etiquetas.PRINT)
+        if(token != null && token.getEtiqueta() == Etiquetas.PRINT)
         {
             registro = new Registro();
             registro.setEstructura(token);
